@@ -1,5 +1,13 @@
 # SAP Visual GUI Designer
 
+## AI generated
+
+Does not work
+
+<img width="1920" height="894" alt="image" src="https://github.com/user-attachments/assets/bb3702be-ce59-46f6-81c8-99e1e299136a" />
+
+
+
 ## Introduction
 The SAP Visual GUI Designer is a powerful application that enables users to create user interfaces for SAP applications using a visual approach. It allows developers to design and prototype interfaces quickly, enhancing productivity and user experience.
 

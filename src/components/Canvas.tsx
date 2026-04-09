@@ -1,50 +1,57 @@
 import React, { useState } from 'react';
 
-const Canvas = () => {
-    const [components, setComponents] = useState([]);
-    const [selectedComponent, setSelectedComponent] = useState(null);
+interface UIComponent {
+  id: string;
+  type: string;
+  name: string;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
 
-    const handleDrop = (e) => {
-        e.preventDefault();
-        const newComponent = {
-            id: Date.now(),
-            position: { x: e.clientX, y: e.clientY }
-        };
-        setComponents([...components, newComponent]);
-    };
+interface CanvasProps {
+  components: UIComponent[];
+  selectedId: string | null;
+  onSelect: (id: string) => void;
+  onUpdate: (components: UIComponent[]) => void;
+}
 
-    const handleDragOver = (e) => {
-        e.preventDefault();
-    };
+const Canvas: React.FC<CanvasProps> = ({ components, selectedId, onSelect, onUpdate }) => {
+  const [draggedId, setDraggedId] = useState<string | null>(null);
+  const [offset, setOffset] = useState({ x: 0, y: 0 });
 
-    const handleSelect = (id) => {
-        setSelectedComponent(id);
-    };
+  const handleMouseDown = (e: React.MouseEvent, id: string) => {
+    const comp = components.find(c => c.id === id);
+    if (comp) {
+      setDraggedId(id);
+      setOffset({ x: e.clientX - comp.x, y: e.clientY - comp.y });
+      onSelect(id);
+    }
+  };
 
-    return (
-        <div 
-            style={{ width: '100%', height: '400px', border: '1px solid black' }} 
-            onDrop={handleDrop} 
-            onDragOver={handleDragOver}
-        >
-            {components.map(component => (
-                <div 
-                    key={component.id} 
-                    onClick={() => handleSelect(component.id)} 
-                    style={{
-                        position: 'absolute', 
-                        left: component.position.x,
-                        top: component.position.y, 
-                        width: '50px', 
-                        height: '50px', 
-                        border: selectedComponent === component.id ? '2px solid blue' : '2px solid transparent'
-                    }}
-                >
-                    Component
-                </div>
-            ))}
-        </div>
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!draggedId) return;
+    const newComponents = components.map(c =>
+      c.id === draggedId ? { ...c, x: Math.max(0, e.clientX - offset.x), y: Math.max(0, e.clientY - offset.y) } : c
     );
+    onUpdate(newComponents);
+  };
+
+  const handleMouseUp = () => { setDraggedId(null); };
+
+  return (
+    <div className="canvas-main" onMouseMove={handleMouseMove} onMouseUp={handleMouseUp} onMouseLeave={handleMouseUp}>
+      {components.map((comp) => (
+        <div key={comp.id} className={`component-box ${selectedId === comp.id ? 'selected' : ''}`}
+          style={{ left: `${comp.x}px`, top: `${comp.y}px`, width: `${comp.width}px`, height: `${comp.height}px` }}
+          onMouseDown={(e) => handleMouseDown(e, comp.id)} onClick={() => onSelect(comp.id)}>
+          <strong style={{ fontSize: '12px', display: 'block' }}>{comp.type}</strong>
+          <span style={{ fontSize: '11px', color: '#666' }}>{comp.name}</span>
+        </div>
+      ))}
+    </div>
+  );
 };
 
 export default Canvas;

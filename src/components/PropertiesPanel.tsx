@@ -2,6 +2,7 @@ import React from 'react';
 
 interface UIComponent {
   id: string;
+  type: string;
   name: string;
   label: string;
   x: number;
@@ -25,6 +26,8 @@ const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ component, onUpdate }
       <h3>⚙️ {component.name}</h3>
       <label>Name</label>
       <input type="text" value={component.name} onChange={(e) => onUpdate({ ...component, name: e.target.value })} />
+      <label>Type</label>
+      <input type="text" value={component.type} onChange={(e) => onUpdate({ ...component, type: e.target.value })} />
       <label>Label</label>
       <input type="text" value={component.label} onChange={(e) => onUpdate({ ...component, label: e.target.value })} />
       <label>X</label>

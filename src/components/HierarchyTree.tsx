@@ -2,7 +2,15 @@ import React from 'react';
 
 interface UIComponent {
   id: string;
+  type: string;
   name: string;
+  label: string;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  visible: boolean;
+  enabled: boolean;
 }
 
 interface HierarchyTreeProps {
